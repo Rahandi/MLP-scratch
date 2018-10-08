@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 class Layer:
-    def __init__(self, layer_type, activation, n_input, n_neuron):
+    def __init__(self, layer_type, activation, n_neuron):
         self.n_neuron = n_neuron
         self.activation = activation
     
@@ -10,4 +10,4 @@ class Layer:
         self.weight = np.random.randn(n_input,self.n_neuron) * np.sqrt(2.0/n_input)
 
     def output(self, data_input):
-        return np.matmul(data_input, self.weight)
+        return self.activation(np.matmul(data_input, self.weight))

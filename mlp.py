@@ -1,10 +1,10 @@
 from layer import Layer
 
 class MLP:
-    def __init__(self, ):
+    def __init__(self):
         self.layer = []
         self.loss = 0
 
-    def add(self, n_neuron, n_input, activation):
+    def add(self, n_neuron, activation):
         new_layer = Layer('hidden', activation, n_neuron)
         self.layer.append(new_layer)
