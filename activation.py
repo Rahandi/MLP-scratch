@@ -1,4 +1,4 @@
-from numpy import np
+import numpy as np
 
 
 def sigmoid(x, derivative=False):
@@ -11,6 +11,12 @@ def tanh(x, derivative=False):
     if derivative:
         return 1-(x**2)
     return np.tanh(x)
+
+
+def linear(x, derivative=False):
+    if derivative:
+        return 1
+    return x
 
 
 def relu(x, derivative=False):
@@ -72,3 +78,10 @@ def gaussian(x, derivative=False):
         for b in range(len(x[a])):
             x[a][b] = np.exp(-x[a][b]**2)
     return x
+
+
+func = {
+    'sigmoid': sigmoid,
+    'relu': relu,
+    'linear': linear
+}
