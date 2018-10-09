@@ -60,26 +60,38 @@ class MultiLayerPerceptron:
                     self.layers[i].error = np.dot(self.layers[i+1].weight, self.layers[i+1].error.T)
                     self.layers[i].error = self.layers[i].error.squeeze()
                 self.layers[i].error = np.atleast_2d(self.layers[i].error)
-        # for i in range(len(self.layers)):
-        #     try:
-        #         print(i, 'Error shape', self.layers[i].error.shape)
-        #     except:
-        #         pass
+
         for i in range(1, len(self.layers)):
-            # if self.layers[i].trainable:
-            # print('Layer i-1 output', self.layers[i-1].output_data.T.shape)
-            # print('Error i',  self.layers[i].error.shape)
-            # print('Layer i output', self.layers[i].output_data.shape)
-            # print('Layer i weight', self.layers[i].weight.shape)
             dw = self.layers[i-1].activation(self.layers[i-1].output_data).T.dot(
                 self.layers[i].error * self.layers[i].activation(self.layers[i].output_data, derivative=True))
             self.layers[i].weight += self.lr * dw
 
     def build(self):
+        """Initialize weight on layers
+        """
         for i in range(1, len(self.layers)):
             self.layers[i](self.layers[i-1].n_neuron)
 
     def fit(self, x_train: np.ndarray, y_train: np.ndarray, epoch: np.ndarray, lr: float):
+        """Train model on input data
+
+        Parameters
+        ----------
+        x_train : np.ndarray
+            Training feature
+        y_train : np.ndarray
+            Training target
+        epoch : np.ndarray
+            Training epoch
+        lr : float
+            Learning rate
+
+        Returns
+        -------
+        dict
+            Contains loss and metrics score history
+        """
+
         hist = {
             'loss': [],
             'metric': []
@@ -91,8 +103,8 @@ class MultiLayerPerceptron:
             np.random.seed(e)
             idx = np.array([i for i in range(len(x_train))])
             np.random.shuffle(idx)
-            # x_train = data_x[idx]
-            # y_train = data_y[idx]
+            x_train = data_x[idx]
+            y_train = data_y[idx]
             losses = []
             with trange(len(y_train)) as t:
                 for i in t:
@@ -101,8 +113,7 @@ class MultiLayerPerceptron:
 
                     self.forward(feature)
                     self.backward(target)
-                    loss = target - self.layers[-1].activation(self.layers[-1].output_data).squeeze()
-                    # print('Loss', loss)
+                    loss = (target - self.layers[-1].activation(self.layers[-1].output_data).squeeze())**2
                     losses.append(np.average(loss))
 
                     t.set_description('EPOCH {}'.format(e+1))

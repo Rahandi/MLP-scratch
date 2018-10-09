@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils import to_categorical
+from utils import to_categorical, normalize, standardize
 from mlp import MultiLayerPerceptron
 from layer import Input, Dense
 
@@ -20,10 +20,11 @@ def main():
         # print(y_train[:5])
     x_train = x_train.values
     # x_train = (x_train - x_train.min(axis=0)) / (x_train.max(axis=0) - x_train.min(axis=0))
-    x_train = (x_train - x_train.mean(axis=0)) / np.std(x_train, axis=0)
+    # x_train = (x_train - x_train.mean(axis=0)) / np.std(x_train, axis=0)
+    x_train = standardize(x_train)
     mlp = MultiLayerPerceptron()
     mlp.add(Input(x_train.shape[1]))
-    mlp.add(Dense(32, activation='sigmoid'))
+    mlp.add(Dense(32, activation='relu'))
     mlp.add(Dense(3, activation='sigmoid'))
     mlp.build()
     mlp.fit(x_train, y_train, epoch=100, lr=0.1)
