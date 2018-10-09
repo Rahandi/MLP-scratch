@@ -1,7 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from layer import Layer
 from tqdm import trange
-
 
 class MultiLayerPerceptron:
 
@@ -92,7 +92,7 @@ class MultiLayerPerceptron:
             Contains loss and metrics score history
         """
 
-        hist = {
+        self.hist = {
             'loss': [],
             'metric': []
         }
@@ -118,9 +118,9 @@ class MultiLayerPerceptron:
 
                     t.set_description('EPOCH {}'.format(e+1))
                     t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_train, y_train))
-            hist['loss'].append(np.average(losses))
-            hist['metric'].append(self.evaluate(x_train, y_train))
-        return hist
+            self.hist['loss'].append(np.average(losses))
+            self.hist['metric'].append(self.evaluate(x_train, y_train))
+        return self.hist
 
     def predict(self, x_data: np.ndarray):
         """Predict input data
@@ -171,3 +171,9 @@ class MultiLayerPerceptron:
             y_data = np.argmax(y_data, axis=1)
             metric = np.average(np.equal(result, y_data))
             return metric
+
+    def draw(self):
+        x = range(1,len(self.hist['loss'])+1)
+        y = self.hist['loss']
+        plt.plot(x, y)
+        plt.show()

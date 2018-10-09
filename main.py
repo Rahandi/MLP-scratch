@@ -28,6 +28,7 @@ def main():
     mlp.add(Dense(3, activation='sigmoid'))
     mlp.build()
     mlp.fit(x_train, y_train, epoch=100, lr=0.1)
+    mlp.draw()
 
 
 if __name__ == '__main__':

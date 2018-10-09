@@ -1,0 +1,5 @@
+epoch 100
+1:loss=0.209, metric=0.9
+0.1:loss=0.208, metric=0.927
+0.01:loss=0.215, metric=0.907
+0.001:loss=0.232, metric=0.86
