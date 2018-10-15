@@ -25,7 +25,7 @@ def main():
     x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2)
 
     mean_train = x_train.mean(axis=0)
-    std_train = np.std(x_train, axis=0)
+    std_train = np.std(x_train, axis=0) 
 
     x_train = (x_train - mean_train)/std_train
     x_test = (x_test - mean_train)/std_train
@@ -37,7 +37,7 @@ def main():
     mlp.add(Dense(32, activation='relu'))
     mlp.add(Dense(2, activation='sigmoid'))
     mlp.build()
-    mlp.fit(x_train, y_train, epoch=40, lr=0.1, validation_data=(x_test, y_test))
+    mlp.fit(x_train, y_train, epoch=40, lr=0.05, validation_data=(x_test, y_test))
     mlp.draw()
 
 
