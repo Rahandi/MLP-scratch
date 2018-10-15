@@ -72,7 +72,7 @@ class MultiLayerPerceptron:
         for i in range(1, len(self.layers)):
             self.layers[i](self.layers[i-1].n_neuron)
 
-    def fit(self, x_train: np.ndarray, y_train: np.ndarray, epoch: np.ndarray, lr: float):
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray, epoch: np.ndarray, lr: float, validation_data=None):
         """Train model on input data
 
         Parameters
@@ -91,7 +91,6 @@ class MultiLayerPerceptron:
         dict
             Contains loss and metrics score history
         """
-
         self.hist = {
             'loss': [],
             'metric': []
@@ -117,7 +116,12 @@ class MultiLayerPerceptron:
                     losses.append(np.average(loss))
 
                     t.set_description('EPOCH {}'.format(e+1))
-                    t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_train, y_train))
+                    if validation_data is not None:
+                        x_valid = validation_data[0]
+                        y_valid = validation_data[1]
+                        t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_valid, y_valid))
+                    else:
+                        t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_train, y_train))
             self.hist['loss'].append(np.average(losses))
             self.hist['metric'].append(self.evaluate(x_train, y_train))
         return self.hist
