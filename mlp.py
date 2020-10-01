@@ -1,3 +1,4 @@
+from typing import Dict, List, Optional, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 from layer import Layer
@@ -75,7 +76,14 @@ class MultiLayerPerceptron:
         for i in range(1, len(self.layers)):
             self.layers[i](self.layers[i - 1].n_neuron)
 
-    def fit(self, x_train: np.ndarray, y_train: np.ndarray, epoch: np.ndarray, lr: float, validation_data=None):
+    def fit(
+        self,
+        x_train: np.ndarray,
+        y_train: np.ndarray,
+        epoch: np.ndarray,
+        lr: float,
+        validation_data=Optional[Tuple[np.ndarray, np.ndarray]],
+    ) -> Dict[str, List]:
         """Train model on input data
 
         Parameters
@@ -91,7 +99,7 @@ class MultiLayerPerceptron:
 
         Returns
         -------
-        dict
+        Dict[str, List]
             Contains loss and metrics score history
         """
         self.hist = {"loss": [], "metric": []}
@@ -126,7 +134,7 @@ class MultiLayerPerceptron:
             self.hist["metric"].append(self.evaluate(x_train, y_train))
         return self.hist
 
-    def predict(self, x_data: np.ndarray):
+    def predict(self, x_data: np.ndarray) -> np.ndarray:
         """Predict input data
 
         Parameters
@@ -147,7 +155,7 @@ class MultiLayerPerceptron:
             result.append(res)
         return np.array(result)
 
-    def evaluate(self, x_data: np.ndarray, y_data: np.ndarray):
+    def evaluate(self, x_data: np.ndarray, y_data: np.ndarray) -> float:
         """Evaluate prediction
 
         Parameters
