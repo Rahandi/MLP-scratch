@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils import to_categorical, normalize, standardize
+from utils import to_categorical
 from mlp import MultiLayerPerceptron
 from layer import Input, Dense
 from sklearn.model_selection import train_test_split

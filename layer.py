@@ -1,5 +1,4 @@
 import numpy as np
-import random
 from activation import func
 
 
@@ -21,7 +20,7 @@ class Input(Layer):
     def __init__(self, n_neuron: int):
         super().__init__(n_neuron)
         self.trainable = False
-        self.activation = func['linear']
+        self.activation = func["linear"]
 
     def __call__(self, n_input: int):
         self.weight = np.eye(n_input, self.n_neuron)
@@ -37,7 +36,7 @@ class Dense(Layer):
         self.activation = func[activation]
 
     def __call__(self, n_input: int):
-        self.weight = np.random.randn(n_input, self.n_neuron) * np.sqrt(2.0/n_input)
+        self.weight = np.random.randn(n_input, self.n_neuron) * np.sqrt(2.0 / n_input)
 
     def calc_output(self, input_data):
         return np.matmul(input_data, self.weight)
