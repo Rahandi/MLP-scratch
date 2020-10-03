@@ -1,10 +1,11 @@
+from typing import Dict, List, Optional, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 from layer import Layer
 from tqdm import trange
 
-class MultiLayerPerceptron:
 
+class MultiLayerPerceptron:
     def __init__(self):
         """Multi Layer Perceptron 
         """
@@ -57,22 +58,32 @@ class MultiLayerPerceptron:
                     self.layers[i].error = self.layers[i].error * self.layers[i].activation(self.layers[i].output_data)
                     self.layers[i].error = self.layers[i].error.squeeze()
                 else:
-                    self.layers[i].error = np.dot(self.layers[i+1].weight, self.layers[i+1].error.T)
+                    self.layers[i].error = np.dot(self.layers[i + 1].weight, self.layers[i + 1].error.T)
                     self.layers[i].error = self.layers[i].error.squeeze()
                 self.layers[i].error = np.atleast_2d(self.layers[i].error)
 
         for i in range(1, len(self.layers)):
-            dw = self.layers[i-1].activation(self.layers[i-1].output_data).T.dot(
-                self.layers[i].error * self.layers[i].activation(self.layers[i].output_data, derivative=True))
+            dw = (
+                self.layers[i - 1]
+                .activation(self.layers[i - 1].output_data)
+                .T.dot(self.layers[i].error * self.layers[i].activation(self.layers[i].output_data, derivative=True))
+            )
             self.layers[i].weight += self.lr * dw
 
     def build(self):
         """Initialize weight on layers
         """
         for i in range(1, len(self.layers)):
-            self.layers[i](self.layers[i-1].n_neuron)
+            self.layers[i](self.layers[i - 1].n_neuron)
 
-    def fit(self, x_train: np.ndarray, y_train: np.ndarray, epoch: np.ndarray, lr: float, validation_data=None):
+    def fit(
+        self,
+        x_train: np.ndarray,
+        y_train: np.ndarray,
+        epoch: np.ndarray,
+        lr: float,
+        validation_data=Optional[Tuple[np.ndarray, np.ndarray]],
+    ) -> Dict[str, List]:
         """Train model on input data
 
         Parameters
@@ -88,13 +99,10 @@ class MultiLayerPerceptron:
 
         Returns
         -------
-        dict
+        Dict[str, List]
             Contains loss and metrics score history
         """
-        self.hist = {
-            'loss': [],
-            'metric': []
-        }
+        self.hist = {"loss": [], "metric": []}
         self.lr = lr
         data_x = x_train.copy()
         data_y = y_train.copy()
@@ -112,21 +120,21 @@ class MultiLayerPerceptron:
 
                     self.forward(feature)
                     self.backward(target)
-                    loss = (target - self.layers[-1].activation(self.layers[-1].output_data).squeeze())**2
+                    loss = (target - self.layers[-1].activation(self.layers[-1].output_data).squeeze()) ** 2
                     losses.append(np.average(loss))
 
-                    t.set_description('EPOCH {}'.format(e+1))
+                    t.set_description("EPOCH {}".format(e + 1))
                     if validation_data is not None:
                         x_valid = validation_data[0]
                         y_valid = validation_data[1]
                         t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_valid, y_valid))
                     else:
                         t.set_postfix(loss=np.average(losses), metric=self.evaluate(x_train, y_train))
-            self.hist['loss'].append(np.average(losses))
-            self.hist['metric'].append(self.evaluate(x_train, y_train))
+            self.hist["loss"].append(np.average(losses))
+            self.hist["metric"].append(self.evaluate(x_train, y_train))
         return self.hist
 
-    def predict(self, x_data: np.ndarray):
+    def predict(self, x_data: np.ndarray) -> np.ndarray:
         """Predict input data
 
         Parameters
@@ -147,7 +155,7 @@ class MultiLayerPerceptron:
             result.append(res)
         return np.array(result)
 
-    def evaluate(self, x_data: np.ndarray, y_data: np.ndarray):
+    def evaluate(self, x_data: np.ndarray, y_data: np.ndarray) -> float:
         """Evaluate prediction
 
         Parameters
@@ -167,7 +175,7 @@ class MultiLayerPerceptron:
 
         # Regression
         if self.layers[-1].n_neuron == 1:
-            metric = np.average((result - y_data)**2)
+            metric = np.average((result - y_data) ** 2)
             return metric
         # Classification
         else:
@@ -177,7 +185,7 @@ class MultiLayerPerceptron:
             return metric
 
     def draw(self):
-        x = range(1,len(self.hist['loss'])+1)
-        y = self.hist['loss']
+        x = range(1, len(self.hist["loss"]) + 1)
+        y = self.hist["loss"]
         plt.plot(x, y)
         plt.show()
